@@ -10,7 +10,7 @@ This diagram shows the simple version. An API gateway proxies the requests to an
 
 ![Alt text](./hello-arch.png?raw=true "Title")
 
-This diagram show that the API gateway first invokes the hit-counter AWS Lambda function which executes two tasks. 1) It updates a DynamoDB table with the new hit of the URL 2) It invokes the Lambda function from brefore.
+This diagram shows that the API gateway first invokes the hit-counter AWS Lambda function which executes two tasks. 1) It updates a DynamoDB table with the new hit of the URL 2) It invokes the Lambda function from before.
 
 ![Alt text](./hit-counter.png?raw=true "Title")
 
