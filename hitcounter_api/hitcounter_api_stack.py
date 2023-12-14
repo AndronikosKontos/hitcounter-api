@@ -1,26 +1,29 @@
 from constructs import Construct
 from aws_cdk import (
-    Duration,
     Stack,
-    aws_iam as iam,
-    aws_sqs as sqs,
-    aws_sns as sns,
-    aws_sns_subscriptions as subs,
+    aws_lambda as _lambda,
+    aws_apigateway as apigw
 )
 
+# We are importing the aws_lambda module as _lambda because lambda is a built-in identifier in Python
+# The API Gateway we are deploying proxies all requests to an AWS Lambda function
+# To test after deployment use 'curl https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/prod/'
 
-class HitcounterApiStack(Stack):
+class CdkWorkshopStack(Stack):
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
-        super().__init__(scope, construct_id, **kwargs)
+    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
+        super().__init__(scope, id, **kwargs)
 
-        queue = sqs.Queue(
-            self, "HitcounterApiQueue",
-            visibility_timeout=Duration.seconds(300),
+        # Defines an AWS Lambda resource with the handler from lambda/hello.py (path relative to root directory)
+        my_lambda = _lambda.Function(
+            self, 'HelloHandler',
+            runtime=_lambda.Runtime.PYTHON_3_7,
+            code=_lambda.Code.from_asset('lambda'),
+            handler='hello.handler',
         )
 
-        topic = sns.Topic(
-            self, "HitcounterApiTopic"
+        # Defines an API endpoint and associates it with our Lambda function
+        apigw.LambdaRestApi(
+            self, 'Endpoint',
+            handler=my_lambda,
         )
-
-        topic.add_subscription(subs.SqsSubscription(queue))
