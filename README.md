@@ -1,16 +1,27 @@
+# Introduction
+This repository creates a simple hit counter, which counts the requests that are sent to a specific URL and saves the number to a DynamoDB table.
 
-# Welcome to your CDK Python project!
+It uses AWS CDK with Python to deploy two AWS Lambda functions, an API gateway and a DynamoDB table.
 
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`hitcounter_api_stack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
+The 'simple-response' branch contains a simpler version, with only one AWS Lambda function and not a DynamoDB table.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+# Architecture
+This diagram shows the simple version. An API gateway proxies the requests to an AWS Lambda function which returns a simple message.
 
-This project is set up like a standard Python project.  The initialization process also creates
-a virtualenv within this project, stored under the .venv directory.  To create the virtualenv
-it assumes that there is a `python3` executable in your path with access to the `venv` package.
-If for any reason the automatic creation of the virtualenv fails, you can create the virtualenv
-manually once the init process completes.
+![Alt text](./hello-arch.png?raw=true "Title")
+
+This diagram show that the API gateway first invokes the hit-counter AWS Lambda function which executes two tasks. 1) It updates a DynamoDB table with the new hit of the URL 2) It invokes the Lambda function from brefore.
+
+![Alt text](./hit-counter.png?raw=true "Title")
+
+# Usage
+After initialization, use the command 'cdk deploy' to deploy the stack to your AWS account.
+
+The API gateway will create a URL for your application. To test it you can either use a browser or a client like **curl**.
+
+e.g curl https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/prod/
+
+# Project Init
 
 To manually create a virtualenv on MacOS and Linux:
 
@@ -36,30 +47,3 @@ Once the virtualenv is activated, you can install the required dependencies.
 ```
 $ pip install -r requirements.txt
 ```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
-```
-
-You can now begin exploring the source code, contained in the hello directory.
-There is also a very trivial test included that can be run like this:
-
-```
-$ pytest
-```
-
-To add additional dependencies, for example other CDK libraries, just add to
-your requirements.txt file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
