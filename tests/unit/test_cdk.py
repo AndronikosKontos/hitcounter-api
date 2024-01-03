@@ -6,7 +6,7 @@ from aws_cdk import (
 from hitcounter_api.hitcounter import HitCounter
 import pytest
 
-
+# test branch
 def test_dynamodb_table_created():
     stack = Stack()
     HitCounter(stack, "HitCounter",
